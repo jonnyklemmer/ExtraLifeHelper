@@ -1,0 +1,4 @@
+[apps.ExtraLifeHelper]
+product = "ExtraLifeHelper"
+version = "0.1.0"
+minimum_macos_version = "11"
