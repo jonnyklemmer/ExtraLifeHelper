@@ -23,8 +23,8 @@ struct Donation: Identifiable {
 class CSVViewModel: ObservableObject {
     @Published private(set) var donations: [Donation] = []
     @Published private(set) var donationsWithGames: [Donation] = []
-    @Published private(set) var games: [String] = ["Path Of Exile", "HoN", "Dota2"]
-    @Published private(set) var gameWeights: [Int] = [2,1,2]
+    @Published private(set) var games: [String] = ["Path Of Exileeeeeeeeeeeeeeeeeeeeeeeeee", "HoN", "Dota2", "Sims4"]
+    @Published private(set) var gameWeights: [Int] = [2,1,2,1]
 
     func loadCSVData(data: String) {
         let lines = data.split(whereSeparator: \.isNewline)
@@ -42,7 +42,7 @@ class CSVViewModel: ObservableObject {
                 lineElements.indices.count == 10,
                 let incentive = Incentive(rawValue: lineElements[8])
             else {
-                print("WE GOT PROBLEMS!")
+                // Filter out donations without incentives
                 return nil
             }
 
@@ -61,14 +61,12 @@ class CSVViewModel: ObservableObject {
         self.donations = newDonations
 
         let newDonationsWithGames = newDonations.filter { donation in
-            donation.incentive == .addGame || donation.incentive == .addGameForce
+            (donation.incentive == .addGame || donation.incentive == .addGameForce) && donation.fulfillmentNote.isEmpty == false
         }
 
         var newGames: [String:Int] = [:]
 
         newDonationsWithGames.forEach { donation in
-            guard donation.fulfillmentNote.isEmpty == false else { return }
-
             if let gameCount = newGames[donation.fulfillmentNote], gameCount > 0 {
                 newGames[donation.fulfillmentNote] = gameCount + 1
             } else {

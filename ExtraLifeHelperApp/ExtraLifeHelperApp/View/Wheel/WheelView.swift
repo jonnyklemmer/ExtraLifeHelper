@@ -16,7 +16,7 @@ struct WheelView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let model = FortuneWheelModel(
+            let viewModel = FortuneWheelViewModel(
                 titles: viewModel.games,
                 weights: viewModel.gameWeights,
                 onSpinEnd: onSpinEnd
@@ -26,7 +26,7 @@ struct WheelView: View {
                 Spacer(minLength: 20)
                 HStack {
                     Spacer(minLength: 20)
-                    FortuneWheel(model: model, diameter: calcSize(for: geometry.size))
+                    FortuneWheel(viewModel: viewModel, diameter: calcSize(for: geometry.size))
                     Spacer(minLength: 20)
                 }
                 Spacer(minLength: 20)

@@ -1,15 +1,16 @@
 //
-//  File.swift
-//  
+//  FortuneWheelModel.swift
+//  FortuneWheel
 //
 //  Created by Sameer Nawaz on 24/10/22.
+//  https://github.com/sameersyd/FortuneWheel
+//  Modifications by Jonny Klemmer on 01/11/22.
 //
 
 import SwiftUI
 
-@available(macOS 10.15, *)
-@available(iOS 13.0, *)
-public struct FortuneWheelModel {
+public class FortuneWheelViewModel: ObservableObject {
+    @Published var degree = 0.0
 
     let titles: [String]
     let weights: [Int]
@@ -21,6 +22,8 @@ public struct FortuneWheelModel {
     let animDuration: Double
     let animation: Animation
     let getWheelItemIndex: (() -> (Int))? // TODO: WAT IS THIS
+
+    private var pendingRequestWorkItem: DispatchWorkItem?
 
     public init(
         titles: [String],
@@ -45,6 +48,35 @@ public struct FortuneWheelModel {
         self.animation = animation ?? Animation.timingCurve(0.51, 0.97, 0.56, 0.99, duration: animDuration)
         self.getWheelItemIndex = getWheelItemIndex
     }
+
+    func spinWheel() {
+        withAnimation(animation) {
+            self.degree = Double(360 * Int(self.degree / 360)) + getWheelStopDegree();
+        }
+        // Cancel the currently pending item
+        pendingRequestWorkItem?.cancel()
+        // Wrap our request in a work item
+        let requestWorkItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            let count = self.titles.count
+            let distance = self.degree.truncatingRemainder(dividingBy: 360)
+            let pointer = floor(distance / (360 / Double(count)))
+            if let onSpinEnd = self.onSpinEnd {
+                onSpinEnd(count - Int(pointer) - 1)
+            }
+        }
+        // Save the new work item and execute it after duration
+        pendingRequestWorkItem = requestWorkItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + animDuration + 1, execute: requestWorkItem)
+    }
+
+    private func getWheelStopDegree() -> Double {
+        let randomDegree = Int.random(in: 0...360)
+        let randomSpins = Int.random(in: 4...20)
+        let finalDegree = randomSpins * (360 + randomDegree)
+
+        return Double(finalDegree)
+    }
 }
 
 extension Color {
@@ -62,9 +94,9 @@ extension Color {
 //    ]
 
     static let wheelColors: [Color] = [
-        Color(hex: "9FA5A8"),
-        Color(hex: "B4B9BB"),
-        Color(hex: "C9CDCF"),
+//        Color(hex: "9FA5A8"),
+//        Color(hex: "B4B9BB"),
+//        Color(hex: "C9CDCF"),
         Color(hex: "DCF1FA"),
         Color(hex: "B8E2F5"),
         Color(hex: "94D3F0"),

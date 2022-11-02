@@ -3,15 +3,15 @@
 //  FortuneWheel
 //
 //  Created by Sameer Nawaz on 19/04/21.
+//  https://github.com/sameersyd/FortuneWheel
+//  Modifications by Jonny Klemmer on 01/11/22.
 //
 
 import SwiftUI
 
-@available(macOS 10.15, *)
-@available(iOS 13.0, *)
 struct SpinWheelCell: Shape {
-    
-    let startAngle: Double, endAngle: Double
+    let startAngle: Double
+    let endAngle: Double
     
     func path(in rect: CGRect) -> Path {
         var path = Path()

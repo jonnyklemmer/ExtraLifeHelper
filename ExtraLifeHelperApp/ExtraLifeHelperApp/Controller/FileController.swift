@@ -10,8 +10,6 @@ import AppKit
 
 class FileController: ObservableObject  {
 
-
-
 //    private func unwrapImage(
 //      from provider: NSItemProvider,
 //      completion: @escaping (UIImage?) -> Void

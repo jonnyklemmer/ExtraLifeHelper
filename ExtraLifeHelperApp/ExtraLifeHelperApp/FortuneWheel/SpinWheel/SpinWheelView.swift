@@ -3,6 +3,8 @@
 //  FortuneWheel
 //
 //  Created by Sameer Nawaz on 19/04/21.
+//  https://github.com/sameersyd/FortuneWheel
+//  Modifications by Jonny Klemmer on 01/11/22.
 //
 
 import SwiftUI
@@ -42,24 +44,22 @@ struct SpinWheelBolt: View {
 }
 
 struct SpinWheelView: View {
-    var data: [Double]
+    @State var data: [Double]
     var labels: [String]
     
     private let colors: [Color]
     private let sliceOffset: Double = -.pi / 2
-    @available(macOS 10.15, *)
     
     init(data: [Double], labels: [String], colors: [Color]) {
         self.data = data
         self.labels = labels
         self.colors = colors
     }
-    @available(macOS 10.15.0, *)
     
     var body: some View {
         GeometryReader { geo in
             ZStack(alignment: .center) {
-                ForEach(0..<data.count) { index in
+                ForEach(0..<data.count, id: \.self) { index in
                     SpinWheelCell(
                         startAngle: startAngle(for: index),
                         endAngle: endAngle(for: index)
@@ -67,14 +67,18 @@ struct SpinWheelView: View {
                     .fill(colors[index % colors.count])
 
                     Text(labels[index])
-                        .foregroundColor(Color.wheelText)
                         .font(Font.system(size: 20))
                         .fontWeight(.bold)
+                        .lineLimit(1)
+                        .foregroundColor(Color.wheelText)
+                        .frame(width: (geo.size.width/2)*0.6)
+                        .rotationEffect(.radians(avgAngle(for: index)), anchor: .center)
                         .offset(viewOffset(for: index, in: geo.size))
-                        .rotationEffect(Angle(degrees: -45))
+                        .minimumScaleFactor(0.5)
                         .zIndex(1)
                 }
             }
+
         }
     }
     
@@ -95,11 +99,17 @@ struct SpinWheelView: View {
             return sliceOffset + 2 * .pi * ratio
         }
     }
-    
+
+    private func avgAngle(for index: Int) -> CGFloat {
+        let startAngle = startAngle(for: index)
+        let endAngle = endAngle(for: index)
+        return CGFloat((startAngle+endAngle)/2)
+    }
+
     private func viewOffset(for index: Int, in size: CGSize) -> CGSize {
         let radius = min(size.width, size.height) / 3
-        let dataRatio = (2 * data[..<index].reduce(0, +) + data[index]) / (2 * data.reduce(0, +))
-        let angle = CGFloat(sliceOffset + 2 * .pi * dataRatio)
+        let angle = avgAngle(for: index)
+
         return CGSize(width: radius * cos(angle), height: radius * sin(angle))
     }
 }
