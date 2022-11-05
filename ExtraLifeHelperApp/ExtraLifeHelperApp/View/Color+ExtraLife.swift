@@ -9,29 +9,13 @@ import Foundation
 import SwiftUI
 
 extension Color {
-//    static let wheelColors: [Color] = [
-//        Color(hex: "F1F7EE"),
-//        Color(hex: "E0EDC5"),
-//        Color(hex: "99D19C"),
-//        Color(hex: "C0E6DE"),
-//        Color(hex: "BCD3F2"),
-//        Color(hex: "E6AACE"),
-//        Color(hex: "FFC6AC"),
-//        Color(hex: "EFBC9B"),
-//        Color(hex: "C6AFB1"),
-//        Color(hex: "F2D0A4")
-//    ]
-
     static let wheelColors: [Color] = [
-//        Color(hex: "9FA5A8"),
-//        Color(hex: "B4B9BB"),
-//        Color(hex: "C9CDCF"),
+        Color(hex: "EDF8FC"),
         Color(hex: "DCF1FA"),
         Color(hex: "B8E2F5"),
         Color(hex: "94D3F0"),
         Color(hex: "70C4EB"),
         Color(hex: "4CB5E6"),
-
     ]
 
     static let wheelText = Color(hex: "040F16")

@@ -7,6 +7,7 @@
 //  Modifications by Jonny Klemmer on 01/11/22.
 //
 
+import Combine
 import SwiftUI
 
 public class FortuneWheelViewModel: ObservableObject {
@@ -49,11 +50,15 @@ public class FortuneWheelViewModel: ObservableObject {
     }
 
     func spinWheel() {
+        self.winner = nil
+
         withAnimation(animation) {
             self.degree = Double(360 * Int(self.degree / 360)) + getWheelStopDegree();
         }
+        
         // Cancel the currently pending item
         pendingRequestWorkItem?.cancel()
+
         // Wrap our request in a work item
         let requestWorkItem = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
@@ -82,11 +87,17 @@ public class FortuneWheelViewModel: ObservableObject {
             return
         }
 
-        DispatchQueue.main.async {
+        Task { @MainActor in
             let winner = self.titles[index]
             self.winner = winner
             print("Wheel Winner: \(winner)")
             self.counter += 1
+        }
+
+        // Remove winner overlay after 30 seconds
+        Task { @MainActor in
+            try await Task.sleep(nanoseconds: 30_000_000_000)
+            self.winner = nil
         }
     }
 }

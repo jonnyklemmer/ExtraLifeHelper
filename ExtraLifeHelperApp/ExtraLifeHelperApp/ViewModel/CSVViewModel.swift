@@ -77,8 +77,6 @@ class CSVViewModel: ObservableObject {
     }
 
     private func updateDonations(_ newDonations: [Donation]) {
-
-
         var newDonationsWithGames = newDonations.filter { donation in
             (donation.incentive == .addGame || donation.incentive == .addGameForce) && donation.fulfillmentNote.isEmpty == false
         }
@@ -94,12 +92,13 @@ class CSVViewModel: ObservableObject {
                 gameName = shortenedName
             }
 
-            if let index = games.firstIndex(of: gameName) {
-                weights[index] += 1
-            } else {
+            // Remove support for weights (for now)
+//            if let index = games.firstIndex(of: gameName) {
+//                weights[index] += 1
+//            } else {
                 games.append(gameName)
                 weights.append(1)
-            }
+//            }
         }
 
         DispatchQueue.main.async {
