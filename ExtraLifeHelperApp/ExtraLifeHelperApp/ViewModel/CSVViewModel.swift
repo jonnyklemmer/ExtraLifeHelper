@@ -77,13 +77,16 @@ class CSVViewModel: ObservableObject {
     }
 
     private func updateDonations(_ newDonations: [Donation]) {
-        self.donations = newDonations
 
-        let newDonationsWithGames = newDonations.filter { donation in
+
+        var newDonationsWithGames = newDonations.filter { donation in
             (donation.incentive == .addGame || donation.incentive == .addGameForce) && donation.fulfillmentNote.isEmpty == false
         }
 
-        var newGames: [String:Int] = [:]
+        var games: [String] = []
+        var weights: [Int] = []
+
+        newDonationsWithGames.sort(by: { $0.timestamp > $1.timestamp })
 
         newDonationsWithGames.forEach { donation in
             var gameName = donation.fulfillmentNote
@@ -91,15 +94,19 @@ class CSVViewModel: ObservableObject {
                 gameName = shortenedName
             }
 
-            if let gameCount = newGames[gameName], gameCount > 0 {
-                newGames[gameName] = gameCount + 1
+            if let index = games.firstIndex(of: gameName) {
+                weights[index] += 1
             } else {
-                newGames[gameName] = 1
+                games.append(gameName)
+                weights.append(1)
             }
         }
 
-        self.donationsWithGames = newDonationsWithGames
-        self.games = Array(newGames.keys)
-        self.gameWeights = Array(newGames.values)
+        DispatchQueue.main.async {
+            self.donations = newDonations
+            self.donationsWithGames = newDonationsWithGames
+            self.games = games
+            self.gameWeights = weights
+        }
     }
 }

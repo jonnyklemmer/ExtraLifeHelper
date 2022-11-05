@@ -69,8 +69,8 @@ public class FortuneWheelViewModel: ObservableObject {
     }
 
     private func getWheelStopDegree() -> Double {
-        let randomDegree = Int.random(in: 0...360)
-        let randomSpins = Int.random(in: 4...20)
+        let randomDegree = Int.random(in: 180...360)
+        let randomSpins = Int.random(in: 6...20)
         let finalDegree = randomSpins * (360 + randomDegree)
 
         return Double(finalDegree)
@@ -82,9 +82,11 @@ public class FortuneWheelViewModel: ObservableObject {
             return
         }
 
-        let winner = titles[index]
-        self.winner = winner
-        print("Wheel Winner: \(winner)")
-        counter += 1
+        DispatchQueue.main.async {
+            let winner = self.titles[index]
+            self.winner = winner
+            print("Wheel Winner: \(winner)")
+            self.counter += 1
+        }
     }
 }
