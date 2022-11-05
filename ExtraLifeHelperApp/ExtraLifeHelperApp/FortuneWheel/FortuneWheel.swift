@@ -7,12 +7,15 @@
 //  Modifications by Jonny Klemmer on 01/11/22.
 //
 
+import ConfettiSwiftUI
 import SwiftUI
 
 public struct FortuneWheel: View {
     private let diameter: CGFloat
     @ObservedObject private var viewModel: FortuneWheelViewModel
-    
+
+    /// TODO: Theres a bug here due to the param being created in the body
+    /// and this wheel being unable to tell that it should update
     public init(viewModel: FortuneWheelViewModel, diameter: CGFloat) {
         self.diameter = diameter
         self.viewModel = viewModel
@@ -46,5 +49,6 @@ public struct FortuneWheel: View {
             }
             SpinWheelPointer(pointerColor: viewModel.pointerColor).offset(x: 0, y: -25)
         }
+        .confettiCannon(counter: $viewModel.counter, num: 100, openingAngle: Angle(degrees: 0), closingAngle: Angle(degrees: 360), repetitions: 3, repetitionInterval: 0.1)
     }
 }

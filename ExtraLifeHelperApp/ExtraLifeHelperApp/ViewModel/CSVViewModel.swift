@@ -23,8 +23,20 @@ struct Donation: Identifiable {
 class CSVViewModel: ObservableObject {
     @Published private(set) var donations: [Donation] = []
     @Published private(set) var donationsWithGames: [Donation] = []
-    @Published private(set) var games: [String] = ["Path Of Exileeeeeeeeeeeeeeeeeeeeeeeeee", "HoN", "Dota2", "Sims4"]
-    @Published private(set) var gameWeights: [Int] = [2,1,2,1]
+    @Published private(set) var games: [String] = []
+    @Published private(set) var gameWeights: [Int] = []
+
+    // Donations where fulfillment note was accidentally missed
+    private let overrides = [
+        "10/28/2022 1:51PM": "Path of Exile",
+        "10/29/2022 8:50PM": "Jump King"
+    ]
+
+    // Cleaning up game requests to fit on wheel better
+    private let gameNameMapping = [
+        "One of my favorite Steam titles ever... Portal 2. The game has everything!": "Portal 2",
+        "Powerwashing simulator or post apocalyptic stray cat are the vibes i'm after": "Powerwash / Stray"
+    ]
 
     func loadCSVData(data: String) {
         let lines = data.split(whereSeparator: \.isNewline)
@@ -46,11 +58,18 @@ class CSVViewModel: ObservableObject {
                 return nil
             }
 
+            let donator = lineElements[0]
+            let timestamp = lineElements[4]
+            var fulfillmentNote = lineElements[9]
+            if let override = overrides[timestamp], override.isEmpty == false {
+                fulfillmentNote = override
+            }
+
             return Donation(
-                timestamp: lineElements[4],
-                donator: lineElements[0],
+                timestamp: timestamp,
+                donator: donator,
                 incentive: incentive,
-                fulfillmentNote: lineElements[9]
+                fulfillmentNote: fulfillmentNote
             )
         }
 
@@ -67,10 +86,15 @@ class CSVViewModel: ObservableObject {
         var newGames: [String:Int] = [:]
 
         newDonationsWithGames.forEach { donation in
-            if let gameCount = newGames[donation.fulfillmentNote], gameCount > 0 {
-                newGames[donation.fulfillmentNote] = gameCount + 1
+            var gameName = donation.fulfillmentNote
+            if let shortenedName = gameNameMapping[gameName], shortenedName.isEmpty == false {
+                gameName = shortenedName
+            }
+
+            if let gameCount = newGames[gameName], gameCount > 0 {
+                newGames[gameName] = gameCount + 1
             } else {
-                newGames[donation.fulfillmentNote] = 1
+                newGames[gameName] = 1
             }
         }
 

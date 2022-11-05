@@ -18,8 +18,7 @@ struct WheelView: View {
         GeometryReader { geometry in
             let viewModel = FortuneWheelViewModel(
                 titles: viewModel.games,
-                weights: viewModel.gameWeights,
-                onSpinEnd: onSpinEnd
+                weights: viewModel.gameWeights
             )
 
             VStack {
@@ -37,10 +36,6 @@ struct WheelView: View {
     private func calcSize(for size: CGSize) -> CGFloat {
         let tall = min(size.width, size.height)
         return tall * widthScalar
-    }
-
-    private func onSpinEnd(index: Int) {
-        print("New game: \(viewModel.games[index])")
     }
 }
 
