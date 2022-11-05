@@ -3,24 +3,32 @@
 [![Platform support](https://img.shields.io/badge/platform-osx-lightgrey.svg?style=flat-square)](https://github.com/jonnyklemmer/ExtraLifeHelper/blob/main/README)
 [![License MIT](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/jonnyklemmer/ExtraLifeHelper/blob/main/LICENSE)
 
-ExtraLifeHelper is a utility app built 
+ExtraLifeHelper is a utility app built to support Extra Life gameday donations made towards incentives ([read more here](https://www.extra-life.org/participant/481353))
 
 ## Features
-Planned:
-- Parsing of DonorDrive CSV to track fulfillment notes from incentives
-- Ability to add incentives to a randomized wheel
+- Uploading DonorDrive CSVs to track fulfillment notes from incentives
+- Ability to view a table list of incentives
+- Ability to view a table list of chosen games
+- Games displayed on an animated 2D wheel
+- Spin the wheel to randomly select a game!
 
+#### Planned:
+- Drag & Drop support for CSVs
+- Sorting/selecting table columns
+- Animations and announcement when wheel lands on a game
 
 ## Built with
-Leverages [SwiftBundler](https://github.com/stackotter/swift-bundler) to generate a (eventually) cross-platform Swift app built with SPM.
+Swift, SwiftUI & Hacky code
 
 ### Setup
 - Checkout project
-- To leverage Xcode IDE `swift bundler generate-xcode-support`
-- Open  `Package.swift` file
-- Run via xcode or `swift bundler run`
+- Build app
 
 ## Dependencies
-TBD - but probably:
-- https://github.com/swiftcsv/SwiftCSV (or custom)
+None directly yet.
+
+TBD someday:
 - https://github.com/DonorDrive/PublicAPI
+
+## Credits
+[FortuneWheel by Sameer](https://github.com/sameersyd/FortuneWheel)
